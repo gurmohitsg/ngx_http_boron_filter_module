@@ -1,0 +1,25 @@
+ngx_addon_name=ngx_http_boron_filter_module
+
+ngx_feature='Memchached client library'
+ngx_feature_name=
+ngx_feature_run=yes
+ngx_feature_incs='#include <libmemcached/memcached.h>'
+ngx_feature_path=
+ngx_feature_libs='-lmemcached'
+ngx_feature_test='memcached_lib_version();'
+. auto/feature
+
+if [ $ngx_found = yes ]; then
+    CORE_LIBS="$CORE_LIBS $ngx_feature_libs"
+else
+    cat << END
+
+$0: error: the boron module requires the memcached client library to be installed. Please install it first.
+
+END
+    exit 1
+fi
+
+HTTP_FILTER_MODULES="$HTTP_FILTER_MODULES ngx_http_boron_filter_module"
+NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/src/ngx_http_boron_filter_module.c"
+
